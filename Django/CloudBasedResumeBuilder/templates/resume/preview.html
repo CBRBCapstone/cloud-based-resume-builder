@@ -1,0 +1,78 @@
+{% extends "resume/base.html" %}
+{% block title %}{{ p.full_name }} — Preview{% endblock %}
+{% block header_actions %}
+  <a href="{% url 'edit_profile' p.pk %}" class="px-3 py-1.5 text-sm border rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">Edit</a>
+{% endblock %}
+{% block content %}
+  <div class="bg-white dark:bg-gray-950 rounded-2xl shadow border border-gray-200 dark:border-gray-800 p-8 print:shadow-none print:border-0">
+    <div class="flex items-center gap-6">
+      {% if p.photo %}<img src="{{ p.photo.url }}" class="w-24 h-24 rounded-full object-cover" alt="photo">{% endif %}
+      <div>
+        <h1 class="text-3xl font-semibold leading-tight">{{ p.full_name }}</h1>
+        <p class="text-sm text-gray-600 dark:text-gray-400">
+          {{ p.email }}{% if p.phone %} • {{ p.phone }}{% endif %}{% if p.location %} • {{ p.location }}{% endif %}
+        </p>
+        <p class="text-sm">
+          {% if p.website %}<a class="underline" href="{{ p.website }}">Website</a>{% endif %}
+          {% if p.github %} • <a class="underline" href="{{ p.github }}">GitHub</a>{% endif %}
+          {% if p.linkedin %} • <a class="underline" href="{{ p.linkedin }}">LinkedIn</a>{% endif %}
+        </p>
+      </div>
+    </div>
+
+    {% if p.summary %}
+      <h2 class="mt-6 text-xl font-semibold">Summary</h2>
+      <p class="mt-2 whitespace-pre-line">{{ p.summary }}</p>
+    {% endif %}
+
+    {% if p.experience.all %}
+      <h2 class="mt-6 text-xl font-semibold">Experience</h2>
+      <div class="mt-2 space-y-4">
+        {% for e in p.experience.all %}
+          <div>
+            <p class="font-medium">{{ e.role }} — {{ e.company }}</p>
+            <p class="text-sm text-gray-600 dark:text-gray-400">{{ e.start }} – {{ e.end }}</p>
+            <ul class="list-disc ml-6">
+              {% for b in e.bullets.splitlines %}{% if b %}<li>{{ b }}</li>{% endif %}{% endfor %}
+            </ul>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% if p.projects.all %}
+      <h2 class="mt-6 text-xl font-semibold">Projects</h2>
+      <div class="mt-2 space-y-2">
+        {% for pr in p.projects.all %}
+          <p><span class="font-medium">{{ pr.name }}</span> — {{ pr.description }}
+             {% if pr.link %}(<a class="underline" href="{{ pr.link }}">link</a>){% endif %}
+             {% if pr.tech %}<br><span class="text-sm text-gray-600 dark:text-gray-400">{{ pr.tech }}</span>{% endif %}
+          </p>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% if p.education.all %}
+      <h2 class="mt-6 text-xl font-semibold">Education</h2>
+      <div class="mt-2 space-y-1">
+        {% for ed in p.education.all %}
+          <p><span class="font-medium">{{ ed.degree }}</span>, {{ ed.school }} ({{ ed.start }} – {{ ed.end }})</p>
+          {% if ed.details %}<p class="text-sm whitespace-pre-line">{{ ed.details }}</p>{% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% if p.skills.all %}
+      <h2 class="mt-6 text-xl font-semibold">Skills</h2>
+      <p class="mt-2">
+        {% for s in p.skills.all %}
+          {{ s.name }}{% if s.level %} ({{ s.level }}){% endif %}{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+      </p>
+    {% endif %}
+  </div>
+
+  <style>
+    @media print { header, footer { display:none!important } body { background:#fff } }
+  </style>
+{% endblock %}
