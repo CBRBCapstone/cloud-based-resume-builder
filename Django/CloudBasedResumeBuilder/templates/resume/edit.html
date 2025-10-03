@@ -1,0 +1,235 @@
+{% extends "resume/base.html" %}
+{% load widget_tweaks %}
+{% block title %}Edit Resume{% endblock %}
+
+
+{% block header_actions %}
+  <a href="{% url 'preview' profile.pk %}"
+     class="px-3 py-1.5 text-sm border rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">Preview</a>
+{% endblock %}
+
+{% block content %}
+  <form method="post" enctype="multipart/form-data" class="space-y-6">
+    {% csrf_token %}
+
+    <!-- Profile card -->
+    <section class="bg-white dark:bg-gray-950 rounded-2xl shadow border border-gray-200 dark:border-gray-800">
+      <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-800">
+        <h2 class="text-lg font-semibold">Profile</h2>
+        <p class="text-sm text-gray-500 dark:text-gray-400">Start with your headline and contact info.</p>
+      </div>
+      <div class="px-6 py-6 grid md:grid-cols-2 gap-4">
+        {{ form.non_field_errors }}
+        <div class="md:col-span-2">
+          <label class="block text-sm font-medium">Full name</label>
+          {{ form.full_name|add_class:"mt-1 w-full rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900" }}
+        </div>
+        <div>
+          <label class="block text-sm font-medium">Email</label>
+          {{ form.email|add_class:"mt-1 w-full rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900" }}
+        </div>
+        <div>
+          <label class="block text-sm font-medium">Phone</label>
+          {{ form.phone|add_class:"mt-1 w-full rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900" }}
+        </div>
+        <div>
+          <label class="block text-sm font-medium">Location</label>
+          {{ form.location|add_class:"mt-1 w-full rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900" }}
+        </div>
+        <div>
+          <label class="block text-sm font-medium">Website</label>
+          {{ form.website|add_class:"mt-1 w-full rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900" }}
+        </div>
+        <div>
+          <label class="block text-sm font-medium">GitHub</label>
+          {{ form.github|add_class:"mt-1 w-full rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900" }}
+        </div>
+        <div>
+          <label class="block text-sm font-medium">LinkedIn</label>
+          {{ form.linkedin|add_class:"mt-1 w-full rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900" }}
+        </div>
+        <div class="md:col-span-2">
+          <label class="block text-sm font-medium">Summary</label>
+          {{ form.summary|add_class:"mt-1 w-full rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900" }}
+          <p class="text-xs text-gray-500 mt-1">Aim for 3–4 crisp sentences showing impact and tech stack.</p>
+        </div>
+        <div class="md:col-span-2">
+          <label class="block text-sm font-medium">Photo</label>
+          {{ form.photo|add_class:"mt-1 w-full rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900" }}
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== Helper: management forms are required ====== -->
+    {{ ed_fs.management_form }} {{ ex_fs.management_form }} {{ pr_fs.management_form }} {{ sk_fs.management_form }}
+
+    <!-- Education -->
+    <section class="bg-white dark:bg-gray-950 rounded-2xl shadow border border-gray-200 dark:border-gray-800">
+      <div class="px-6 py-4 flex items-center justify-between border-b border-gray-100 dark:border-gray-800">
+        <div>
+          <h2 class="text-lg font-semibold">Education</h2>
+          <p class="text-sm text-gray-500 dark:text-gray-400">List newest first.</p>
+        </div>
+        <button type="button" class="px-3 py-1.5 text-sm border rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+                onclick="addForm('ed')">+ Add</button>
+      </div>
+      <div id="ed-forms" class="px-6 py-6 space-y-5">
+        {% for f in ed_fs %}
+          <div class="grid md:grid-cols-2 gap-4 p-4 rounded-xl border border-gray-200 dark:border-gray-800">
+            <div><label class="block text-sm font-medium">School</label>{{ f.school|add_class:"mt-1 w-full rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900" }}</div>
+            <div><label class="block text-sm font-medium">Degree</label>{{ f.degree|add_class:"mt-1 w-full rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900" }}</div>
+            <div><label class="block text-sm font-medium">Start</label>{{ f.start|add_class:"mt-1 w-full rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900" }}</div>
+            <div><label class="block text-sm font-medium">End</label>{{ f.end|add_class:"mt-1 w-full rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900" }}</div>
+            <div class="md:col-span-2"><label class="block text-sm font-medium">Details</label>{{ f.details|add_class:"mt-1 w-full rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900" }}</div>
+            <div><label class="block text-sm font-medium">Order</label>{{ f.order|add_class:"mt-1 w-full rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900" }}</div>
+            <div class="flex items-end"><label class="block text-sm font-medium"> </label><button type="button" class="px-3 py-1.5 text-sm border rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20"
+                    onclick="removeBlock(this,'ed')">Remove</button>{{ f.DELETE }}</div>
+          </div>
+        {% empty %}
+          <p class="text-sm text-gray-500">No education yet.</p>
+        {% endfor %}
+      </div>
+      <!-- empty form template -->
+      <template id="ed-empty">
+        {{ ed_fs.empty_form.as_p|escapejs }}
+      </template>
+    </section>
+
+    <!-- Experience -->
+    <section class="bg-white dark:bg-gray-950 rounded-2xl shadow border border-gray-200 dark:border-gray-800">
+      <div class="px-6 py-4 flex items-center justify-between border-b border-gray-100 dark:border-gray-800">
+        <div>
+          <h2 class="text-lg font-semibold">Experience</h2>
+          <p class="text-sm text-gray-500 dark:text-gray-400">Use strong action verbs and metrics.</p>
+        </div>
+        <button type="button" class="px-3 py-1.5 text-sm border rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+                onclick="addForm('ex')">+ Add</button>
+      </div>
+      <div id="ex-forms" class="px-6 py-6 space-y-5">
+        {% for f in ex_fs %}
+          <div class="grid md:grid-cols-2 gap-4 p-4 rounded-xl border border-gray-200 dark:border-gray-800">
+            <div><label class="block text-sm font-medium">Company</label>{{ f.company|add_class:"mt-1 w-full rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900" }}</div>
+            <div><label class="block text-sm font-medium">Role</label>{{ f.role|add_class:"mt-1 w-full rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900" }}</div>
+            <div><label class="block text-sm font-medium">Start</label>{{ f.start|add_class:"mt-1 w-full rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900" }}</div>
+            <div><label class="block text-sm font-medium">End</label>{{ f.end|add_class:"mt-1 w-full rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900" }}</div>
+            <div class="md:col-span-2"><label class="block text-sm font-medium">Bullets (one per line)</label>{{ f.bullets|add_class:"mt-1 w-full rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900" }}</div>
+            <div><label class="block text-sm font-medium">Order</label>{{ f.order|add_class:"mt-1 w-full rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900" }}</div>
+            <div class="flex items-end"><label class="block text-sm font-medium"> </label><button type="button" class="px-3 py-1.5 text-sm border rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20"
+                    onclick="removeBlock(this,'ex')">Remove</button>{{ f.DELETE }}</div>
+          </div>
+        {% empty %}<p class="text-sm text-gray-500">No experience yet.</p>{% endfor %}
+      </div>
+      <template id="ex-empty">{{ ex_fs.empty_form.as_p|escapejs }}</template>
+    </section>
+
+    <!-- Projects -->
+    <section class="bg-white dark:bg-gray-950 rounded-2xl shadow border border-gray-200 dark:border-gray-800">
+      <div class="px-6 py-4 flex items-center justify-between border-b border-gray-100 dark:border-gray-800">
+        <div>
+          <h2 class="text-lg font-semibold">Projects</h2>
+          <p class="text-sm text-gray-500 dark:text-gray-400">Show outcomes and links.</p>
+        </div>
+        <button type="button" class="px-3 py-1.5 text-sm border rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+                onclick="addForm('pr')">+ Add</button>
+      </div>
+      <div id="pr-forms" class="px-6 py-6 space-y-5">
+        {% for f in pr_fs %}
+          <div class="grid md:grid-cols-2 gap-4 p-4 rounded-xl border border-gray-200 dark:border-gray-800">
+            <div><label class="block text-sm font-medium">Name</label>{{ f.name|add_class:"mt-1 w-full rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900" }}</div>
+            <div><label class="block text-sm font-medium">Link</label>{{ f.link|add_class:"mt-1 w-full rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900" }}</div>
+            <div class="md:col-span-2"><label class="block text-sm font-medium">Description</label>{{ f.description|add_class:"mt-1 w-full rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900" }}</div>
+            <div class="md:col-span-2"><label class="block text-sm font-medium">Tech</label>{{ f.tech|add_class:"mt-1 w-full rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900" }}</div>
+            <div><label class="block text-sm font-medium">Order</label>{{ f.order|add_class:"mt-1 w-full rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900" }}</div>
+            <div class="flex items-end"><label class="block text-sm font-medium"> </label><button type="button" class="px-3 py-1.5 text-sm border rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20"
+                    onclick="removeBlock(this,'pr')">Remove</button>{{ f.DELETE }}</div>
+          </div>
+        {% empty %}<p class="text-sm text-gray-500">No projects yet.</p>{% endfor %}
+      </div>
+      <template id="pr-empty">{{ pr_fs.empty_form.as_p|escapejs }}</template>
+    </section>
+
+    <!-- Skills -->
+    <section class="bg-white dark:bg-gray-950 rounded-2xl shadow border border-gray-200 dark:border-gray-800">
+      <div class="px-6 py-4 flex items-center justify-between border-b border-gray-100 dark:border-gray-800">
+        <div>
+          <h2 class="text-lg font-semibold">Skills</h2>
+          <p class="text-sm text-gray-500 dark:text-gray-400">Group by categories (e.g., AWS, Python, DevOps).</p>
+        </div>
+        <button type="button" class="px-3 py-1.5 text-sm border rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+                onclick="addForm('sk')">+ Add</button>
+      </div>
+      <div id="sk-forms" class="px-6 py-6 space-y-5">
+        {% for f in sk_fs %}
+          <div class="grid md:grid-cols-3 gap-4 p-4 rounded-xl border border-gray-200 dark:border-gray-800">
+            <div><label class="block text-sm font-medium">Name</label>{{ f.name|add_class:"mt-1 w-full rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900" }}</div>
+            <div><label class="block text-sm font-medium">Level</label>{{ f.level|add_class:"mt-1 w-full rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900" }}</div>
+            <div class="grid grid-cols-2 gap-3 items-end">
+              <div><label class="block text-sm font-medium">Order</label>{{ f.order|add_class:"mt-1 w-full rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900" }}</div>
+              <div class="flex justify-end">
+                <button type="button" class="px-3 py-1.5 text-sm border rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20"
+                        onclick="removeBlock(this,'sk')">Remove</button>{{ f.DELETE }}
+              </div>
+            </div>
+          </div>
+        {% empty %}<p class="text-sm text-gray-500">Add a few core skills.</p>{% endfor %}
+      </div>
+      <template id="sk-empty">{{ sk_fs.empty_form.as_p|escapejs }}</template>
+    </section>
+
+    <!-- Actions -->
+    <div class="flex items-center justify-end gap-3">
+      <a href="{% url 'preview' profile.pk %}" class="px-4 py-2 border rounded-lg">Preview</a>
+      <button class="px-4 py-2 bg-gray-900 text-white rounded-lg hover:opacity-90 dark:bg-gray-100 dark:text-gray-900">
+        Save Changes
+      </button>
+    </div>
+  </form>
+
+  <!-- JS: add/remove formset rows -->
+  <script>
+    function addForm(prefix){
+      // mgmt input TOTAL_FORMS
+      const totalInput = document.querySelector(`input[name="${prefix}-TOTAL_FORMS"]`);
+      const index = parseInt(totalInput.value, 10);
+      const tpl = document.getElementById(`${prefix}-empty`).innerHTML
+        .replaceAll('__prefix__', index);
+      // Wrap it in a styled block
+      const wrapper = document.createElement('div');
+      wrapper.className = 'grid md:grid-cols-2 gap-4 p-4 rounded-xl border border-gray-200 dark:border-gray-800 mt-4';
+      wrapper.innerHTML = tpl;
+      // Convert default <p> layout to Tailwind-friendly inputs
+      Array.from(wrapper.querySelectorAll('input, textarea, select')).forEach(el=>{
+        el.classList.add('mt-1','w-full','rounded-lg','border-gray-300','dark:border-gray-700','bg-white','dark:bg-gray-900');
+      });
+      // Add a Remove button next to DELETE checkbox if present
+      const del = wrapper.querySelector(`input[name$="DELETE"]`);
+      if (del) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'px-3 py-1.5 text-sm border rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20';
+        btn.textContent = 'Remove';
+        btn.onclick = ()=>{ del.checked = true; wrapper.remove(); };
+        const holder = document.createElement('div');
+        holder.className = 'flex items-end';
+        holder.appendChild(btn);
+        wrapper.appendChild(holder);
+      }
+      document.getElementById(`${prefix}-forms`).appendChild(wrapper);
+      totalInput.value = index + 1;
+    }
+    function removeBlock(btn, prefix){
+      // prefer marking DELETE when present to keep indices valid
+      const block = btn.closest('.grid');
+      const del = block.querySelector('input[name$="DELETE"]');
+      if (del) { del.checked = true; }
+      block.remove();
+    }
+  </script>
+{% endblock %}
+
+{% load static %}
+{% comment %}
+The filter add_class is a tiny helper; if you don’t have it, either:
+  a) add django-widget-tweaks (pip install django-widget-tweaks) and {% load widget_tweaks %}, or
+  b) remove `|add_class:"..."` and rely on default styling (still looks good).
+{% endcomment %}
